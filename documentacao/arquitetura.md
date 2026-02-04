@@ -103,27 +103,8 @@ O frontend segue uma **arquitetura baseada em componentes**, típica de aplicaç
 
 ### 4.1 Topologia Cliente-Servidor
 
-```
-┌──────────────────────┐         ┌──────────────────────┐
-│   Frontend (Next.js) │         │  Backend (Express)   │
-│   - React Components │◄─────►  │  - Layered Arch      │
-│   - Context API      │  REST   │  - Repositories      │
-│   - Client-side UI   │  API    │  - Services          │
-└──────────────────────┘         └──────────────────────┘
-          ▲                                    ▲
-          │                                    │
-          │                                    │
-       Docker                               Docker
-       Container                            Container
-                            │
-                            ▼
-                    ┌──────────────────┐
-                    │   PostgreSQL     │
-                    │   (Banco de Dados)│
-                    └──────────────────┘
-```
 
-### 4.2 Comunicação
+### 4.1 Comunicação
 
 - Frontend e Backend se comunicam **exclusivamente via API REST**
 - Cada aplicação roda em seu próprio **container Docker**
