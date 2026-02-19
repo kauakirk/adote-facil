@@ -1,0 +1,62 @@
+services:
+  adote-facil-postgres:
+    image: postgres:14-alpine
+    container_name: adote-facil-postgres
+    env_file:
+      - .env
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    ports:
+      - "${POSTGRES_CONTAINER_PORT}:5432"
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    networks:
+      - adote-facil-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  adote-facil-backend:
+    build: ./backend
+    container_name: adote-facil-backend
+    ports:
+      - "8080:8080"
+    env_file:
+      - ./backend/.env
+    environment:
+      NODE_ENV: production
+    depends_on:
+      adote-facil-postgres:
+        condition: service_healthy
+    networks:
+      - adote-facil-network
+    # Novo: Healthcheck para o backend
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8080/"] # Testa a rota raiz
+      interval: 10s
+      timeout: 5s
+      retries: 3
+
+  adote-facil-frontend:
+    build: ./frontend
+    container_name: adote-facil-frontend
+    ports:
+      - "3000:3000"
+    environment:
+      NODE_ENV: production
+    depends_on:
+      adote-facil-backend:
+        condition: service_healthy # Novo: Frontend só sobe se o backend estiver saudável
+    networks:
+      - adote-facil-network
+
+volumes:
+  db_data:
+
+networks:
+  adote-facil-network:
+    driver: bridge
