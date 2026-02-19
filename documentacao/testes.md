@@ -18,7 +18,7 @@ O backend utiliza **Jest** com **TypeScript**. Testes estão em `backend/src/ser
 
 ---
 
-## Testes de Aceitação E2E com Cypress
+## Testes de Aceitação com Cypress
 
 Foram criados **3 testes principais** cobrindo fluxos essenciais:
 
@@ -57,21 +57,7 @@ Foram criados **3 testes principais** cobrindo fluxos essenciais:
 
 **O que testa:** Navegação, atualizações de status, sincronização entre páginas
 
----
-
-## ⚙️ Como Executar
-
-### Testes Unitários (Backend)
-
-```bash
-cd backend
-npm install
-npm run test              # Executar
-npm run test:watch       # Watch mode
-npm run test:coverage    # Cobertura
-```
-
-### Testes E2E (Frontend)
+### Testes
 
 ```bash
 cd frontend
@@ -99,16 +85,3 @@ frontend/cypress/
 ```
 
 ---
-
-## 📊 Resumo da Cobertura
-
-| Aspecto | Cobertura | Status |
-|---------|-----------|--------|
-| **Login** | Sucesso + 4 casos de erro | ✅ Completo |
-| **Cadastro Animal** | Sucesso + 5 validações | ✅ Completo |
-| **Adoção** | Sucesso + 5 fluxos alternativos | ✅ Completo |
-| **Services (Backend)** | ~90% de cobertura | ✅ Bom |
-| **Controllers (Backend)** | ~60% de cobertura | ⚠️ Oportunidade |
-
-**Total: 3 cenários principais + 15 alternativos = 18 testes E2E**
-
