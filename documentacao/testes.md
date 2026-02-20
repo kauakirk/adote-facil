@@ -20,44 +20,73 @@ O backend utiliza **Jest** com **TypeScript**. Testes estão em `backend/src/ser
 
 ## Testes de Aceitação com Cypress
 
-Foram criados **3 testes principais** cobrindo fluxos essenciais:
+Foram criados **4 testes principais** cobrindo fluxos essenciais:
 
-### 1️⃣ Login e Visualização de Animais (`1-login.cy.ts`)
-
-**Cenários:**
-- ✅ **CP1-01**: Login com credenciais válidas → Acesso à lista de animais
-- 📋 CA1-01: Email inválido → Erro de validação
-- 📋 CA1-02: Senha incorreta → Erro de credenciais
-- 📋 CA1-03: Senha curta → Erro de validação
-- 📋 CA1-04: Link de cadastro funcional
-
-**O que testa:** Autenticação, validações de formulário, navegação pós-login
-
-### 2️⃣ Cadastro de Animal (`2-register-animal.cy.ts`)
+### 1️⃣ Cadastro de Usuário (`cadastro-conta.cy.ts`)
 
 **Cenários:**
-- ✅ **CP2-01**: Cadastro completo com fotos → Redirecionamento para "Meus Animais"
-- 📋 CA2-01: Sem nome → Erro de validação
-- 📋 CA2-02: Sem foto → Erro de validação
-- 📋 CA2-03: Limite de 5 fotos → Bloqueio de upload
-- 📋 CA2-04: Limite de 300 caracteres na descrição
-- 📋 CA2-05: Cadastro com campos opcionais vazios
+- ✅ **CP1-01**: Cadastro com sucesso → Redirecionamento para login
 
-**O que testa:** Validação de formulário, upload de arquivos, limites de entrada, armazenamento
+**O que testa:** Criação de conta, validação de email único, validação de confirmação de senha, armazenamento do usuário
 
-### 3️⃣ Adoção de Animal (`3-adopt-animal.cy.ts`)
+**Teste implementado:**
+```typescript
+it('deve permitir que um novo usuário se cadastre com sucesso', () => {
+  // Gera e-mail único com timestamp
+  // Preenche nome, email e senha
+  // Confirma senha
+  // Verifica resposta 201 da API
+  // Valida redirecionamento para /login
+});
+```
+
+### 2️⃣ Login e Visualização de Animais (`1-login.cy.ts`)
 
 **Cenários:**
-- ✅ **CP3-01**: Visualizar animal → Confirmar adoção → Mudança de status
-- 📋 CA3-01: Visualizar detalhes completos
-- 📋 CA3-02: Voltar sem confirmar adoção
-- 📋 CA3-03: Gerenciar animais em "Meus Animais"
-- 📋 CA3-04: Filtrar animais por tipo/gênero
-- 📋 CA3-05: Limpar filtros
+- ✅ **CP2-01**: Login com credenciais válidas → Acesso à lista de animais
+- ✅ **CP2-02**: Credenciais inválidas → Exibe alerta de erro
 
-**O que testa:** Navegação, atualizações de status, sincronização entre páginas
+**O que testa:** Autenticação, validação de credenciais, navegação pós-login, tratamento de erros
 
-### Testes
+**Testes implementados:**
+```typescript
+it('deve permitir que um usuário existente faça login com sucesso', () => {
+  // Intercepta POST /login
+  // Preenche email e senha válidos
+  // Verifica resposta 200 ou 201
+  // Valida redirecionamento para /area_logada/animais_disponiveis
+});
+
+it('deve exibir uma mensagem de erro ao usar credenciais inválidas', () => {
+  // Intercepta evento de alerta
+  // Preenche com credenciais inválidas
+  // Verifica mensagem de erro: "Email ou senha inválidos."
+});
+```
+
+### 3️⃣ Cadastro de Animal (`animal.cy.ts`)
+
+**Cenários:**
+- ✅ **CP3-01**: Cadastro completo com foto → Redirecionamento para "Meus Animais"
+
+**O que testa:** Validação de formulário, upload de arquivos, seleção de dropdowns (tipo e gênero), armazenamento de animal
+
+**Teste implementado:**
+```typescript
+it('deve permitir que um usuário logado cadastre um novo animal para adoção', () => {
+  // Faz login primeiro
+  // Navega para formulário de cadastro de animal
+  // Preenche: nome, raça, descrição
+  // Seleciona tipo (Cachorro) via dropdown
+  // Seleciona gênero (Macho) via dropdown
+  // Upload de arquivo (pet.webp)
+  // Verifica resposta 201 da API
+  // Valida redirecionamento para /area_logada/meus_animais
+  // Confirma que animal aparece na lista
+});
+```
+
+### Executar Testes
 
 ```bash
 cd frontend
@@ -67,21 +96,22 @@ npm run cypress:run      # Headless (CI/CD)
 ```
 
 **Pré-requisitos:**
-- Backend em `http://localhost:3000`
-- Frontend em `http://localhost:3001`
-- Usuário teste: `usuario@teste.com` / `senha123456`
+- Frontend em `http://localhost:3000`
+- Backend em `http://localhost:3001` (ou porta configurada)
+- Usuário teste já cadastrado (via teste `cadastro-conta.cy.ts`) ou: `usuario@teste.com` / `senha123456`
 - Banco de dados acessível
+- Fixture de imagem: `cypress/fixtures/pet.webp`
 
 ### Estrutura dos Testes E2E
 
 ```
 frontend/cypress/
 ├── e2e/
-│   ├── 1-login.cy.ts              # 5 testes de autenticação
-│   ├── 2-register-animal.cy.ts    # 6 testes de cadastro
-│   └── 3-adopt-animal.cy.ts       # 6 testes de adoção
-├── support/e2e.ts                 # Helpers (comando cy.login())
-└── fixtures/animal-photo.jpg      # Fixture de imagem
+│   ├── cadastro-conta.cy.ts       # 1 teste de cadastro de usuário
+│   ├── 1-login.cy.ts              # 2 testes de autenticação
+│   └── animal.cy.ts               # 1 teste de cadastro de animal
+├── support/e2e.ts                 # Configurações e helpers
+└── fixtures/pet.webp              # Fixture de imagem para testes
 ```
 
 ---
