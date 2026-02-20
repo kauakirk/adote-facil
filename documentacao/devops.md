@@ -62,40 +62,4 @@ services:
         condition: service_healthy
 ```
 
-## 3. Melhorias no Pipeline CI/CD (GitHub Actions)
-**Problemas Encontrados:**
-O tempo de execução do pipeline poderia ser comprometido pela instalação redundante de pacotes via rede. Havia também um erro de diretório no step de subida dos containers que faria o processo falhar ao buscar o manifesto `docker-compose.yml` na pasta errada.
 
-**Soluções Implementadas:**
-* **Implementação de Cache:** Uso da action oficial `actions/setup-node@v4` com cache configurado para pacotes `npm`, acelerando consideravelmente o step de `unit-test` em execuções subsequentes.
-* **Instalação Limpa:** Substituição de `npm install` por `npm ci` para garantir previsibilidade e evitar mutações não intencionais na árvore de dependências (`package-lock.json`) durante o CI.
-* **Correção de Path:** O diretório de execução no passo `Subir containers com Docker Compose` foi ajustado para a raiz do projeto.
-* **Otimização do Delivery:** O comando de empacotamento (`zip`) foi aprimorado para ignorar pastas `node_modules` locais de subdiretórios, gerando um artefato infinitamente mais leve.
-
-### Trechos do GitHub Actions aplicados
-```yaml
-# Exemplo resumido de job (workflow)
-- uses: actions/setup-node@v4
-  with:
-    node-version: 18
-    cache: 'npm'
-
-- name: Install dependencies
-  run: npm ci
-
-- name: Run unit tests
-  run: npm test
-
-# Passo corrigido para subir o docker-compose a partir da raiz do repositório
-- name: Subir containers com Docker Compose
-  working-directory: ${{ github.workspace }}
-  run: |
-    docker compose -f docker-compose.yml up --build -d
-
-# Criação de artefato evitando incluir node_modules
-- name: Create artifact
-  run: |
-    zip -r adote-facil.zip . -x "*/node_modules/*" "backend/node_modules/*" "frontend/node_modules/*"
-```
-
----
