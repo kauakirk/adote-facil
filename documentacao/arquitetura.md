@@ -29,7 +29,6 @@ Organizado em 4 níveis principais:
 ### 🔗 Comunicação e Deploy
 
 - Comunicação via HTTP/HTTPS com autenticação usando JWT  
-- Containerização com **:contentReference[oaicite:1]{index=1}**
 
 ---
 
