@@ -7,7 +7,7 @@ const isValidToken = (token: string | undefined): boolean => {
   try {
     const decoded: { exp: number } = jwtDecode(token)
     return decoded.exp > Date.now() / 1000
-  } catch (e) {
+  } catch {
     return false
   }
 }

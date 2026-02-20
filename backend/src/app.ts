@@ -11,7 +11,7 @@ app.use(express.json())
 app.use(router)
 
 app.use(
-  (err: Error, request: Request, response: Response, next: NextFunction) => {
+  (err: Error, request: Request, response: Response, _next: NextFunction) => {
     console.error(err)
     return response.status(500).json({
       status: 'error',

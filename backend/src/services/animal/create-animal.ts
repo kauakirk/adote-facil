@@ -9,16 +9,16 @@ import {
   animalImageRepositoryInstance,
 } from '../../repositories/animal-image.js'
 
-export namespace CreateAnimalDTO {
-  export type Params = {
-    name: string
-    type: string
-    gender: 'Macho' | 'Fêmea'
-    race?: string
-    description?: string
-    userId: string
-    pictures: Buffer[] // Array de buffers contendo os dados das imagens
-  }
+// Refatorado: Apenas exporte o tipo diretamente
+  export type CreateAnimalDTO = {
+    name: string;
+    type: string;
+    gender: 'Macho' | 'Fêmea';
+    race?: string;
+    description?: string;
+    userId: string;
+    pictures: Buffer[];
+  };
 
   export type Failure = { message: string }
 
