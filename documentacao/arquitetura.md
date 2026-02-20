@@ -11,7 +11,7 @@ Organizado em 4 níveis principais:
 - **Controllers** → recebem requisições HTTP e retornam respostas  
 - **Services** → concentram as regras de negócio  
 - **Repositories** → realizam acesso e abstração dos dados  
-- **Banco de dados** → utilizando **:contentReference[oaicite:0]{index=0}** para acesso ao PostgreSQL  
+- **Banco de dados** → A aplicação utiliza ORM para acessar o PostgreSQL, facilitando manipulação dos dados.
 
 **Stack principal:** Node.js, TypeScript, Express, JWT e Multer.
 
